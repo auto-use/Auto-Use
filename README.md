@@ -4,7 +4,9 @@
   # Auto Use
 
   **One Click. Millions of Possibilities.**
-
+  
+  **NOTE: Download the latest setup from the [release section](https://github.com/auto-use/auto_use/releases) and run the installer.**
+  
   [Features](#-features) • [Agents](#-agents) • [Models](#-supported-models) • [Requirements](#-requirements)
 </div>
 
