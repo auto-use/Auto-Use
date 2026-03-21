@@ -114,6 +114,17 @@
         {
           "name": "autuse agent",
           "status": "pass"
+        },
+            "task 10": {
+      "content": "Task: How many 3 in strawberry"
+      "agents": [
+        {
+          "name": "window-use",
+          "status": "pass"
+        },
+        {
+          "name": "autuse agent",
+          "status": "pass"
         }
       ]
     }
