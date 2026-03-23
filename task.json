@@ -99,6 +99,11 @@
         "name": "autuse agent",
         "status": "fail"
       }
+              ,
+         {
+        "name": "openclaw",
+        "status": "fail"
+      }
     ]
   },
   {
