@@ -1,1 +1,29 @@
 
+List available MCP tools
+
+Here are all available MCP tools in this session:
+
+AutoUse — Windows Automation Agent (9 tools)
+
+Tool	Purpose
+new_session	Reset session — must call first
+scan_screen	Capture element tree + annotated screenshot
+screenshot	Clean screenshot of a specific element
+left_click	Click element by ID
+right_click	Right-click element by ID
+input_text	Type into a specific element
+canvas_input	Type into currently focused area
+scroll	Scroll element up/down/left/right
+wait	Pause N seconds
+shortcut_combo	Press keyboard shortcuts
+open_app	Launch a Windows app by name
+create_todo	Plan a multi-step task
+read_todo	Read current todo list
+update_todo	Mark a step complete
+read_scratchpad	Read persistent session memory
+write_scratchpad	Save checkpoints/findings
+shell	Run PowerShell commands
+view	View file contents with line numbers
+write	Insert content into a file
+replace	Replace content at a specific line
+
