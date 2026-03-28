@@ -26,3 +26,10 @@ Then write "This should not be written" into it.
 Resolve the conflict intelligently.
 
 pass
+
+
+1. Check my latest emails
+2. If any email mentions "meeting", create a calendar event
+3. If no such email exists, write "No meetings found" in Notepad
+
+pass
