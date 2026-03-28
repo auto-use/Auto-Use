@@ -33,3 +33,17 @@ pass
 3. If no such email exists, write "No meetings found" in Notepad
 
 pass
+
+
+Open a browser and go to https://news.google.com
+
+Task:
+1. Extract the top 5 headlines
+2. Remove duplicates or ads
+3. Save them in a file "news.txt" in this format:
+
+- Headline 1
+- Headline 2
+...
+
+pass
