@@ -287,7 +287,7 @@
 "task_35": {
       "content": "make an api script to fetch currencies and their prices conversion in real time main pairs should be between inr , usd , jpy , pound compare all combination and at the end mention most profitable pair in script",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "fail" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pending" }
       ]
