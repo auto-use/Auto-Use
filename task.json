@@ -260,7 +260,7 @@
 "task_32": {
       "content": "Fetch the top 3 trending prediction markets from Polymarket (polymarket.com) right now. For each market, find a related recent news story (from the last 48 hours) that explains why people are betting on it. Save the result as polymarket_briefing.md with the format: # Polymarket Briefing — {today's date} ## 1. {Market Question} **Current odds:** Yes {X}% / No {Y}% **Related news:** {1-2 sentence summary of a real news story that contextualizes this market} ## 2. {Market Question} **Current odds:** Yes {X}% / No {Y}% **Related news:** {1-2 sentence summary} ## 3. {Market Question} **Current odds:** Yes {X}% / No {Y}% **Related news:** {1-2 sentence summary} Only use real, currently active markets. Do not fabricate markets or odds.",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "pass" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pending" }
       ]
