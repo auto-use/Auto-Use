@@ -164,7 +164,7 @@
 "task_21": {
       "content": "Say \"Hello, I'm ready!\" to confirm you can respond.",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "pass" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pending" }
       ]
