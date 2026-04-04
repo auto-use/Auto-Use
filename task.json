@@ -224,7 +224,7 @@
 "task_28": {
       "content": "Create a project structure with: src/ directory, src/main.py with hello world, README.md with project title, and .gitignore ignoring pycache.",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "pass" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pending" }
       ]
