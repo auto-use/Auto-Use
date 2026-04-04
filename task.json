@@ -403,7 +403,7 @@
 "task_48": {
       "content": "open steam go to library search for \"your mom\" and play",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "pass" },
         { "name": "autuse agent", "status": "fail" },
         { "name": "openclaw", "status": "pending" }
       ]
