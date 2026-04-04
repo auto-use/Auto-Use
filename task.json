@@ -420,7 +420,7 @@
 "task_50": {
       "content": "In the windows clock app, can you set a timer for half an hour? I need to wrap something up by then.",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "fail" },
         { "name": "autuse agent", "status": "fail" },
         { "name": "openclaw", "status": "pending" }
       ]
