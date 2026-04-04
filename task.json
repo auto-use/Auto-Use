@@ -377,7 +377,7 @@
 "task_45": {
       "content": "Read config.json, extract the API endpoint, create a Python script to call it, and document the process in NOTES.md.",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "fail" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pending" }
       ]
