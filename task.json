@@ -332,7 +332,7 @@
 "task_40": {
       "content": "You have access to a collection of emails in the emails/ folder in your workspace (12 email files with dates in their filenames). Search through all the emails to find everything related to \"Project Alpha\" and create a comprehensive summary document. Save the summary to alpha_summary.md with the following sections: Project Overview: What is Project Alpha, what technology is being used, and what is the budget? Timeline: Original timeline and any changes, including current expected dates Key Risks and Issues: Budget concerns, security findings, technical challenges Client/Business Impact: Sales pipeline, client feedback, and revenue projections Current Status: Where the project stands right now based on the most recent updates",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "fail" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pending" }
       ]
