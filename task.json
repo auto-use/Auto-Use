@@ -269,7 +269,7 @@
 "task_33": {
       "content": "U.S. economy adds 178,000 jobs in March, far above expectations of 65,000. find out in which sector % and numbers for it",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "pass" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pending" }
       ]
