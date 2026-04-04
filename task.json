@@ -305,7 +305,7 @@
 "task_37": {
       "content": "I have a research report about OpenClaw agent use cases in my workspace as openclaw_report.pdf. I need you to extract several pieces of information from it and write them to answer.txt. Please answer the following questions, one answer per line: How many community-built skills were in the public registry before filtering? How many skills remained after filtering out spam, duplicates, non-English, crypto/finance/trading, and malicious content? What is the largest skill category by count, and how many skills does it have? (format: \"Category Name: count\") What is the second-largest skill category by count, and how many skills does it have? (format: \"Category Name: count\") What is the name of the file that defines an OpenClaw skill? What type of API does the OpenClaw gateway expose? What date was the skills registry data collected? How many new benchmark tasks does the paper propose? (just the number)",
       "agents": [
-        { "name": "window-use", "status": "pending" },
+        { "name": "window-use", "status": "fail" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pending" }
       ]
