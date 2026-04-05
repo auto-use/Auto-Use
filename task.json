@@ -405,7 +405,7 @@
       "agents": [
         { "name": "cursortouch", "status": "pass" },
         { "name": "autuse agent", "status": "fail" },
-        { "name": "openclaw", "status": "pending" }
+        { "name": "openclaw", "status": "fail" }
       ]
     } ,
 
