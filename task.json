@@ -157,7 +157,7 @@
       "agents": [
         { "name": "cursortouch", "status": "fail" },
         { "name": "autuse agent", "status": "fail" },
-        { "name": "openclaw", "status": "pending" }
+        { "name": "openclaw", "status": "fail" }
       ]
     } ,
 
