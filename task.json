@@ -133,6 +133,7 @@
         { "name": "cursortouch", "status": "fail" },
         { "name": "autuse agent", "status": "fail" },
         { "name": "openclaw", "status": "fail" }
+         { "name": "computeruse", "status": "fail" },
       ]
     },
     "task_16": {
