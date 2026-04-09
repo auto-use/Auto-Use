@@ -409,7 +409,7 @@
         { "name": "cursortouch", "status": "pass" },
         { "name": "autuse agent", "status": "pass" },
         { "name": "openclaw", "status": "pass" } , 
-           { "name": "computeruse", "status": "pass" },
+         Read config.json, extract the API endpoint, create a Python script to call it, and document the process in NOTES.md.
       ]
     } ,
 
@@ -427,8 +427,9 @@
       "content": "Read config.json, extract the API endpoint, create a Python script to call it, and document the process in NOTES.md.",
       "agents": [
         { "name": "cursortouch", "status": "fail" },
-        { "name": "autuse agent", "status": "pass" },
-        { "name": "openclaw", "status": "pass" }
+        { "name": "autuse agent", "status": "pass"},
+        { "name": "openclaw", "status": "pass" } ,
+          { "name": "computeruse", "status": "fail" },
       ]
     } ,
 
