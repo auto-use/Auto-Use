@@ -62,7 +62,7 @@ The GUI agent interfaces at the OS kernel level using low-level input drivers, e
 
 ### 🎛️ Multi-Provider Support
 
-Choose from 20+ AI models across OpenRouter, Groq, OpenAI, and Anthropic. Switch providers based on speed, cost, or capability needs.
+Choose from 15+ AI models across OpenAI, Anthropic, Google Gemini, Groq, OpenRouter, and Perplexity. Switch providers based on speed, cost, or capability needs.
 
 ---
 
@@ -108,32 +108,55 @@ Searches multiple sources, extracts and summarizes data in real time, and feeds 
 
 ## 🧠 Supported Models
 
-Auto Use supports **20+ vision-language models** across 4 providers.
+Auto Use supports **15+ vision-language models** across 6 providers.
 
-### OpenRouter
+### OpenAI (Direct)
 
-Access multiple AI providers through a single API.
-
-
-| Model                    | API Name / Short Name           | Reasoning |
-| ------------------------ | ------------------------------- | --------- |
-| **Gemini 2.5 Pro**       | `google/gemini-2.5-pro`         | ✅         |
-| **Gemini 2.5 Flash**     | `google/gemini-2.5-flash`       | ✅         |
-| **Gemini 2.5 Flash Lite**| `google/gemini-2.5-flash-lite`  | ✅         |
-| **Gemini 3 Pro Preview** | `google/gemini-3-pro-preview`   | ✅         |
-| **Gemini 3 Flash Preview**| `google/gemini-3-flash-preview` | ✅         |
-| **Gemini 3.1 Pro**       | `google/gemini-3.1-pro`         | ✅         |
-| **GPT-5.1**              | `openai/gpt-5.1`                | ✅         |
-| **GPT-5.2**              | `openai/gpt-5.2`                | ✅         |
-| **GPT-5 Pro**            | `openai/gpt-5-pro`              | ❌         |
-| **Claude Sonnet 4.5**    | `anthropic/claude-sonnet-4.5`   | ✅         |
-| **Claude Sonnet 4.6**    | `anthropic/claude-sonnet-4.6`   | ✅         |
-| **Grok 4 Fast**          | `x-ai/grok-4-fast`              | ✅         |
-| **Grok 4.1 Fast**        | `x-ai/grok-4.1-fast`            | ✅         |
-| **Kimi K2.5**            | `moonshotai/kimi-k2.5`          | ✅         |
+Direct access to OpenAI's latest models.
 
 
-🔗 **Get API Key:** [openrouter.ai/keys](https://openrouter.ai/keys)
+| Model            | Model Key      | Reasoning | Vision |
+| ---------------- | -------------- | --------- | ------ |
+| **GPT-5.4 Mini** | `gpt-5.4-mini` | ✅         | ✅      |
+| **GPT-5.4**      | `gpt-5.4`      | ✅         | ✅      |
+
+
+🔗 **Get API Key:** [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+
+---
+
+### Anthropic (Direct)
+
+Native access to Anthropic's Claude models.
+
+
+| Model                 | Model Key          | Vision |
+| --------------------- | ------------------ | ------ |
+| **Claude Haiku 4.5**  | `claude-haiku-4.5`  | ✅      |
+| **Claude Sonnet 4.5** | `claude-sonnet-4.5` | ✅      |
+| **Claude Opus 4.5**   | `claude-opus-4.5`   | ✅      |
+| **Claude Opus 4.6**   | `claude-opus-4.6`   | ✅      |
+| **Claude Sonnet 4.6** | `claude-sonnet-4.6` | ✅      |
+
+
+🔗 **Get API Key:** [console.anthropic.com](https://console.anthropic.com)
+
+---
+
+### Google Gemini (Direct + Vertex)
+
+Access Google's Gemini models directly or through Vertex AI.
+
+
+| Model                         | Model Key                | Reasoning | Vision | Vertex |
+| ----------------------------- | ------------------------ | --------- | ------ | ------ |
+| **Gemini 3.1 Pro**            | `gemini-3.1-pro`         | ✅         | ✅      | ❌      |
+| **Gemini 3 Flash**            | `gemini-3-flash`         | ✅         | ✅      | ❌      |
+| **Gemini 3.1 Pro (Vertex)**   | `gemini-3.1-pro-vertex`  | ✅         | ✅      | ✅      |
+| **Gemini 3 Flash (Vertex)**   | `gemini-3-flash-vertex`  | ✅         | ✅      | ✅      |
+
+
+🔗 **Get API Key:** [aistudio.google.dev](https://aistudio.google.dev)
 
 ---
 
@@ -142,45 +165,54 @@ Access multiple AI providers through a single API.
 Ultra-fast inference with open-source models.
 
 
-| Model                    | API Name / Short Name                            | Vision | Notes              |
-| ------------------------ | ------------------------------------------------- | ------ | ------------------ |
-| **GPT-OSS 120B**         | `openai/gpt-oss-120b`                             | —      | Coding agent only  |
-| **Llama 4 Scout 17B**    | `meta-llama/llama-4-scout-17b-16e-instruct`      | ✅      |                    |
+| Model                 | Model Key        | Reasoning | Vision | Notes             |
+| --------------------- | ---------------- | --------- | ------ | ----------------- |
+| **GPT-OSS 120B**      | `gpt-oss-120b`   | ✅         | ❌      | Coding agent only |
+| **Llama 4 Scout 17B** | `llama-4-scout`  | ❌         | ✅      |                   |
 
 
 🔗 **Get API Key:** [console.groq.com/keys](https://console.groq.com/keys)
 
 ---
 
-### OpenAI Direct
+### OpenRouter
 
-Direct access to OpenAI's latest models.
-
-
-| Model       | API Name   | Reasoning |
-| ----------- | ---------- | --------- |
-| **GPT-5.1** | `gpt-5.1`  | ✅         |
-| **GPT-5.2** | `gpt-5.2`  | ✅         |
+Access multiple AI providers through a single API.
 
 
-🔗 **Get API Key:** [platform.openai.com/api-keys](https://platform.openai.com/api-keys)
+| Model                      | Model Key          | Reasoning | Vision |
+| -------------------------- | ------------------ | --------- | ------ |
+| **Gemini 3.1 Pro Preview** | `gemini-3.1-pro`   | ✅         | ✅      |
+| **Gemini 3 Flash Preview** | `gemini-3-flash`   | ✅         | ✅      |
+| **GPT-5.4 Mini**           | `gpt-5.4-mini`     | ✅         | ✅      |
+| **GPT-5.4 Pro**            | `gpt-5.4-pro`      | ❌         | ✅      |
+| **Claude Opus 4.6**        | `claude-opus-4.6`  | ✅         | ✅      |
+| **Claude Sonnet 4.6**      | `claude-sonnet-4.6`| ✅         | ✅      |
+| **Grok 4 Fast**            | `grok-4-fast`      | ✅         | ✅      |
+| **Grok 4.1 Fast**          | `grok-4.1-fast`    | ✅         | ✅      |
+| **Kimi K2.5**              | `kimi-k2.5`        | ❌         | ✅      |
+
+
+🔗 **Get API Key:** [openrouter.ai/keys](https://openrouter.ai/keys)
 
 ---
 
-### Anthropic Direct
+### Perplexity
 
-Native access to Anthropic's Claude models.
-
-
-| Model                  | Model name / API name   |
-| ---------------------- | ----------------------- |
-| **Claude Sonnet 4.6**  | `claude-sonnet-4.6` (`claude-sonnet-4-6`) |
-| **Claude Sonnet 4.5**  | `claude-sonnet-4.5` (`claude-sonnet-4-5-20250929`) |
-| **Claude Haiku 4.5**   | `claude-haiku-4.5` (`claude-haiku-4-5-20251001`) |
-| **Claude Opus 4.5**    | `claude-opus-4.5` (`claude-opus-4-5-20251101`) |
+AI-powered search and reasoning.
 
 
-🔗 **Get API Key:** [console.anthropic.com](https://console.anthropic.com)
+| Model                      | Model Key          | Reasoning | Vision |
+| -------------------------- | ------------------ | --------- | ------ |
+| **GPT-5.4**                | `gpt-5.4`          | ✅         | ✅      |
+| **Gemini 3.1 Pro Preview** | `gemini-3.1-pro`   | ✅         | ✅      |
+| **Gemini 3 Flash Preview** | `gemini-3-flash`   | ✅         | ✅      |
+| **Claude Sonnet 4.6**      | `claude-sonnet-4.6`| ✅         | ✅      |
+| **Claude Opus 4.6**        | `claude-opus-4.6`  | ✅         | ✅      |
+| **Perplexity Sonar**       | `sonar`             | ❌         | ❌      |
+
+
+🔗 **Get API Key:** [perplexity.ai](https://www.perplexity.ai)
 
 ---
 
@@ -190,10 +222,11 @@ Native access to Anthropic's Claude models.
 | Use Case         | Recommended Model                | Why                                   |
 | ---------------- | -------------------------------- | ------------------------------------- |
 | **Fast & Cheap** | `gemini-3-flash`                 | Great balance of speed and capability |
-| **Most Capable** | `claude-sonnet-4.5` / `claude-4.6` / `gemini-3.1-pro` | Best reasoning for complex tasks      |
+| **Most Capable** | `claude-opus-4.6` / `gemini-3.1-pro` | Best reasoning for complex tasks |
 | **Ultra-Fast**   | `llama-4-scout` (Groq)          | Lowest latency                        |
-| **Coding agent** | `gpt-oss-120b` (Groq)          | Coding agent only                     |
-| **Best Vision**  | `claude-sonnet-4.5` / `claude-4.6` (Anthropic) | Excellent UI understanding   |
+| **Coding Agent** | `gpt-oss-120b` (Groq)           | Coding agent only                     |
+| **Best Vision**  | `claude-sonnet-4.6` / `claude-opus-4.6` | Excellent UI understanding   |
+| **Web Search**   | `sonar` (Perplexity)            | Built-in search capabilities          |
 
 
 ---
@@ -221,7 +254,7 @@ Native access to Anthropic's Claude models.
 | -------------------------- | -------- | ------- |
 | Multi-agent system         | ✅        | ❌       |
 | knowledge system           | ✅        | ❌       |
-| 20+ model support          | ✅        | Limited |
+| 15+ model support          | ✅        | Limited |
 | Vision-based automation    | ✅        | ✅       |
 | Coding agent               | ✅        | ❌       |
 | Web search integration     | ✅        | ❌       |
@@ -230,11 +263,6 @@ Native access to Anthropic's Claude models.
 
 ---
 
-## 💻 OS Support
+## 💻 Supported OS
 
-
-| Operating System | Status         |
-| ---------------- | -------------- |
-| **Windows**      | ✅ Supported    |
-| **macOS**        | 🚧 Coming Soon |
-| **Linux**        | 🚧 Coming Soon |
+**Windows 10/11** (64-bit)
