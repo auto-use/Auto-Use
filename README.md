@@ -5,7 +5,7 @@
 
   **One Click. Millions of Possibilities.**
   
-  **NOTE: Download the latest setup from the [release section](https://github.com/auto-use/auto_use/releases) and run the installer.**
+  **NOTE: Download the latest setup from the [release section](https://github.com/auto-use/Auto-Use-Windows/releases) and run the installer.**
   
   [Features](#-features) • [Agents](#-agents) • [Models](#-supported-models) • [Requirements](#-requirements)
 </div>
@@ -26,12 +26,6 @@
   <a href="https://drive.google.com/file/d/1cPFu5SHA0udp9ErLandowRcaYIqfM30H/view?usp=sharing"><img src="https://img.shields.io/badge/▶_Coding_Task_Demo-34A853?style=for-the-badge&logo=google-drive&logoColor=white" alt="Coding Task Demo"/></a>
   &nbsp;&nbsp;
   <a href="https://drive.google.com/file/d/1iTC_nGRIuAsEBBOudjccU_pBi5bxXQm3/view?usp=sharing"><img src="https://img.shields.io/badge/▶_OS_Based_Web_Scraping-EA4335?style=for-the-badge&logo=google-drive&logoColor=white" alt="OS Based Web Scraping"/></a>
-</p>
-
----
-
-<p align="center">
-  <img src="benchmark_graph.svg" alt="Benchmark Results" width="680"/>
 </p>
 
 ---
