@@ -5,7 +5,7 @@
 
   **One Click. Millions of Possibilities.**
   
-  **NOTE: Download the latest setup from the [release section](https://github.com/auto-use/Auto-Use-Windows/releases) and run the installer.**
+  **NOTE: Download the latest setup from the [release section](https://github.com/auto-use/Auto-Use/releases) and run the installer.**
   
   [Features](#-features) • [Agents](#-agents) • [Models](#-supported-models) • [Requirements](#-requirements)
 </div>
@@ -265,4 +265,8 @@ AI-powered search and reasoning.
 
 ## 💻 Supported OS
 
-**Windows 10/11** (64-bit)
+
+| Operating System | Status      |
+| ---------------- | ----------- |
+| **Windows**      | ✅ Supported |
+| **macOS**        | ✅ Supported |
