@@ -5,7 +5,10 @@
 
   **Agent with Million Moves.**
 
-  🖥️ Windows &nbsp;•&nbsp; 🍎 macOS &nbsp;•&nbsp; 🔌 MCP Server for Claude Desktop
+  **OS Support:** Windows, macOS
+  **MCP Support:** Windows, macOS (auto-detects OS)
+
+  🌐 [autouse.netlify.app](https://autouse.netlify.app/)
 
   [![Download](https://img.shields.io/badge/Download_Latest-Release-blue?style=for-the-badge)](https://github.com/auto-use/Auto-Use/releases)
 
