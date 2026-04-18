@@ -1,0 +1,58 @@
+# Copyright 2026 Ashish Yadav (Autouse AI)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Model mappings for Google provider
+# Maps user-friendly names to actual API model names
+
+MODEL_MAPPINGS = {
+    "gemini-3.1-pro": {
+        "api_name": "gemini-3.1-pro-preview",
+        "vision": True,
+        "display_name": "Gemini 3.1 Pro",
+        "reasoning_support": True,
+        "vertex": False
+    },
+    "gemini-3-flash": {
+        "api_name": "gemini-3-flash-preview",
+        "vision": True,
+        "display_name": "Gemini 3 Flash",
+        "reasoning_support": True,
+        "vertex": False
+    },
+    "gemini-3.1-pro-vertex": {
+        "api_name": "gemini-3.1-pro-preview",
+        "vision": True,
+        "display_name": "Gemini 3.1 Pro (Vertex)",
+        "reasoning_support": True,
+        "vertex": True
+    },
+    "gemini-3-flash-vertex": {
+        "api_name": "gemini-3-flash-preview",
+        "vision": True,
+        "display_name": "Gemini 3 Flash (Vertex)",
+        "reasoning_support": True,
+        "vertex": True
+    }
+}
+
+def get_model_info(short_name: str) -> dict:
+    """Get full model information from short name"""
+    if short_name in MODEL_MAPPINGS:
+        return MODEL_MAPPINGS[short_name]
+    return {
+        "api_name": short_name,
+        "vision": True,
+        "display_name": short_name,
+        "reasoning_support": True
+    }
