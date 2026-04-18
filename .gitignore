@@ -1,0 +1,121 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# Conversation files
+conversation/
+
+# Todo folder
+todo/
+
+# Debug folder
+debug/
+
+# Browser automation data
+agent_data/
+conversations/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env.local
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Logs
+*.log
+
+/Auto_Use/windows_use/controller/tool/browser/agent_data/browseruse_agent_data
+.env
+/note/notes.md
+/cli_conversation
+/milestone
+sandbox_log.txt
+/cli_milestone
+/cli_todo
+/sandbox_workspace
+/Auto_Use/windows_use/scratchpad/milestone
+/Auto_Use/windows_use/scratchpad/cli_todo
+/Auto_Use/windows_use/scratchpad/cli_milestone
+_embedded_resources.py
+/raw_reasoning
+*.mp4
+/Auto_Use/api_key
+/Auto_Use/windows_use/mcp_tracking
+*.exe
+*.ico
+
+# Certificates
+cert/
+certs/
+*.pem
+*.crt
+*.key
+*.cer
+*.pfx
+*.p12
+
+# -----------------------------------------------------------------------------
+# Private UI and build files — DO NOT COMMIT
+# -----------------------------------------------------------------------------
+# The UI layer and binary build scripts are not part of the open-source core.
+# They are maintained separately in a private workspace and are only used to
+# produce release binaries, which are published on the website and in the
+# GitHub Releases page of this repo.
+#
+# Do not edit, add, or commit these files here. If you need to change them,
+# work in the private workspace and publish a new binary release from there.
+# -----------------------------------------------------------------------------
+mac_app.py
+mac_binary_build.py
+windows_app.py
+windows_binary_build.py
+frontend/
