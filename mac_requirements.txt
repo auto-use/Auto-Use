@@ -1,0 +1,33 @@
+# macOS Accessibility & UI Automation
+pyobjc-framework-Cocoa
+pyobjc-framework-Quartz
+pyobjc-framework-ApplicationServices
+pyautogui
+pynput
+
+# Image Processing
+Pillow
+opencv-python
+numpy
+scipy
+
+# HTTP Requests & API clients
+requests
+groq
+openai
+anthropic
+google-genai
+
+# Environment & Configuration
+python-dotenv
+pywebview
+
+# Utilities
+mss
+flask
+psutil
+
+# Build Tools (Nuitka binary compilation)
+nuitka
+ordered-set
+zstandard
