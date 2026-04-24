@@ -304,7 +304,8 @@ class AgentService:
         cli_await_result = None  # Stores cli_await result for next iteration's light message
         pending_web_response = None  # Stores web tool response for light digest iteration
         json_fail_count = 0  # Track consecutive JSON parse failures (max 3 before exit)
-        
+        final_output = None
+
         # Print model info once at the start
         print(f"\n🔄 Processing with {self.llm_manager.get_model_name()}")
         
@@ -738,6 +739,7 @@ No image and element tree provided. Focus on digesting the web response below.
                             
                             # Check if task completed (done action was executed)
                             if action_result.get("action") == "done":
+                                final_output = action_result.get('summary', 'Task completed')
                                 print(f"\n🎉 Task Complete: {action_result.get('summary', 'Task completed')}")
                                 print("✅ Agent has finished all tasks. Exiting loop.")
                                 break
@@ -796,5 +798,6 @@ No image and element tree provided. Focus on digesting the web response below.
         
         # Cleanup: Stop CLI agent subprocess if running
         self.controller.stop_cli_agent()
+        return final_output if final_output else "Agent loop completed"
         
         return "Agent loop completed"

@@ -1,8 +1,6 @@
 import os
 import json
 import platform
-import concurrent.futures
-import threading
 from datasets import load_dataset
 
 # Import your Auto-Use AgentService
@@ -35,11 +33,12 @@ def main():
     # Load metadata from your local download
     dataset = load_dataset(DATASET_DIR, "2023_all", split="test")
     
+    # Initialize your agent once to save startup time
+    print(f"Initializing Auto-Use Agent ({MODEL})...")
+    agent = AgentService(provider=PROVIDER, model=MODEL, save_conversation=False)
+    
     completed_tasks = get_completed_tasks(OUTPUT_FILE)
     print(f"Found {len(completed_tasks)} completed tasks. Resuming...")
-
-    # Initialize thread pool for our timeout wrapper
-    executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
 
     try:
         for example in dataset:
@@ -61,47 +60,17 @@ def main():
             
             prompt += "\nPlease provide a short, exact answer required to solve this."
 
-            print(f"\n{'='*60}")
-            print(f"[{task_id}] Running Task...")
+            print(f"\n[{task_id}] Running Task...")
             
-            # 1. Create a fresh stop_event for this specific task
-            task_stop_event = threading.Event()
+            # --- CRITICAL PART ---
+            # You might need to modify agent.process_request to RETURN the final answer 
+            # instead of just printing it, so we can capture it here.
+            final_answer = agent.process_request(prompt) 
             
-            # 2. Initialize a fresh agent to clear scratchpad and bind the stop event
-            # Doing this inside the loop prevents memory/scratchpad bleed between tasks
-            print(f"Initializing Auto-Use Agent ({MODEL})...")
-            agent = AgentService(
-                provider=PROVIDER, 
-                model=MODEL, 
-                save_conversation=False,
-                stop_event=task_stop_event
-            )
-
-            final_answer = None
-
-            # 3. Run the agent in a background thread
-            future = executor.submit(agent.process_request, prompt)
-
-            try:
-                # Wait up to 20 minutes (1200 seconds)
-                final_answer = future.result(timeout=1200)
-                
-            except concurrent.futures.TimeoutError:
-                # --- TIMEOUT TRIGGERED ---
-                print(f"\n⏳ TASK TIMED OUT: 20 minutes elapsed for {task_id}.")
-                # Trigger the Auto-Use stop event so the background thread shuts down cleanly
-                task_stop_event.set() 
-                final_answer = "task timed out"
-            except Exception as e:
-                # Catch any severe runtime errors that kill the thread
-                print(f"\n❌ Error during task execution: {str(e)}")
-                final_answer = "ERROR: Agent crashed"
-
-            # --- THE SAFETY CHECK ---
-            # Catch empty outputs or the default "loop completed" message if the agent got stuck
-            if not final_answer or final_answer == "Agent loop completed":
-                print(f"⚠️ Warning: Agent failed to complete {task_id}. Logging as error.")
-                final_answer = "ERROR: Agent failed or crashed"
+            # If process_request doesn't return a string, you'll need to extract it 
+            # from your agent's state or memory.
+            if not final_answer:
+                final_answer = "No answer returned"
 
             # Save immediately to prevent data loss on crash/pause
             result = {
@@ -112,13 +81,11 @@ def main():
             with open(OUTPUT_FILE, 'a', encoding='utf-8') as f:
                 f.write(json.dumps(result) + '\n')
                 
-            print(f"✅ Saved result for {task_id}")
+            print(f"Saved result for {task_id}")
 
     except KeyboardInterrupt:
         print("\n\n[PAUSED] Execution stopped by user. Progress has been saved to", OUTPUT_FILE)
         print("Run the script again to resume from where you left off.")
-        # Cleanly shut down the executor if you Ctrl+C
-        executor.shutdown(wait=False, cancel_futures=True)
 
 if __name__ == "__main__":
     main()
