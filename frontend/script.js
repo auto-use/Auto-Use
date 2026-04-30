@@ -43,25 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
             llmWrapper.classList.remove('expanded');
             dropdownOptions.querySelectorAll('.active-provider').forEach(el => el.classList.remove('active-provider'));
         } else {
-            // Expand: Calculate exact content height
-            // First, add the expanded class to make children visible/rendered
+            // Expand: measure the wrapper's children directly so the height
+            // adapts to whatever the current header looks like (including the
+            // taller "selected model + brain icon" state after the first
+            // selection). Using offsetHeight of the two children skips the
+            // wrapper's own padding, which `box-sizing: content-box` adds back
+            // on top of any inline `height` we set — that mismatch was the
+            // empty-space bug on the second open.
             llmWrapper.classList.add('expanded');
-            
-            // Get the full height of the content including padding
-            // We need to measure the scrollHeight of the wrapper or the dropdown options
-            // Since wrapper grows, let's measure the children height + padding
-            
-            const baseHeight = 28; // Approximate base height of the button part or use dropdownOptions.scrollHeight
-            const padding = 16; // Top + Bottom padding approx
-            
-            // Better approach: Use scrollHeight of the wrapper itself now that it's 'expanded' but constrained?
-            // Or measure the dropdown-options which is the growing part.
-            
-            const optionsHeight = dropdownOptions.scrollHeight;
-            const headerHeight = 34; // Height of the top label part
-            const totalHeight = headerHeight + optionsHeight + 8; // + padding
-            
-            llmWrapper.style.height = `${totalHeight}px`;
+            const headerEl = llmWrapper.querySelector('.glass-button-content');
+            const headerH  = headerEl ? headerEl.offsetHeight : 0;
+            const optionsH = dropdownOptions.offsetHeight;
+            llmWrapper.style.height = `${headerH + optionsH}px`;
         }
     });
 
@@ -268,15 +261,40 @@ document.addEventListener('DOMContentLoaded', () => {
         const rect = llmWrapper.getBoundingClientRect();
         settingsBtnEl.style.left = (rect.right + 10) + 'px';
     };
-    
+
     // Reposition on load, resize, and after any selection change
     positionSettingsBtn();
     window.addEventListener('resize', positionSettingsBtn);
-    
+
     // Observe LLM button size/position changes (e.g. after model selection or layout switch)
     const resizeObserver = new ResizeObserver(positionSettingsBtn);
     resizeObserver.observe(llmWrapper);
-    llmWrapper.addEventListener('transitionend', positionSettingsBtn);
+
+    // While the LLM wrapper's `left` is animating (chat box slide-in/out),
+    // re-read its position every frame so the settings cog tracks it
+    // smoothly. Without this rAF loop the cog only moves on transitionend
+    // and visibly snaps at the end of the 0.5s slide.
+    let _settingsTrackRAF = 0;
+    const trackSettingsBtnPosition = () => {
+        const tick = () => {
+            positionSettingsBtn();
+            _settingsTrackRAF = requestAnimationFrame(tick);
+        };
+        if (!_settingsTrackRAF) _settingsTrackRAF = requestAnimationFrame(tick);
+    };
+    const stopTrackingSettingsBtn = () => {
+        if (_settingsTrackRAF) {
+            cancelAnimationFrame(_settingsTrackRAF);
+            _settingsTrackRAF = 0;
+        }
+        positionSettingsBtn();
+    };
+
+    const isLeftTransition = (e) => e.propertyName === 'left' && e.target === llmWrapper;
+    llmWrapper.addEventListener('transitionrun',    (e) => { if (isLeftTransition(e)) trackSettingsBtnPosition();   });
+    llmWrapper.addEventListener('transitionstart',  (e) => { if (isLeftTransition(e)) trackSettingsBtnPosition();   });
+    llmWrapper.addEventListener('transitionend',    (e) => { if (isLeftTransition(e)) stopTrackingSettingsBtn();    });
+    llmWrapper.addEventListener('transitioncancel', (e) => { if (isLeftTransition(e)) stopTrackingSettingsBtn();    });
 
     // Load immediately
     loadData();
