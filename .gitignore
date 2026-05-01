@@ -110,3 +110,4 @@ windows_binary_build.py
 mac_binary_build.py
 *.icns
 screen_record.py
+/Auto_Use/macOS_use/scratchpad
