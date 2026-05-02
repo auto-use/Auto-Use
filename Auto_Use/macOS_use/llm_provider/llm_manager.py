@@ -176,8 +176,8 @@ AGENT_OUTPUT_SCHEMA = {
                             "type": "object",
                             "properties": {
                                 "type": {"type": "string", "const": "applescript"},
-                                "app": {"type": "string"},
-                                "value": {"type": "string"}
+                                "app": {"type": "string", "minLength": 1},
+                                "value": {"type": "string", "minLength": 1}
                             },
                             "required": ["type", "app", "value"],
                             "additionalProperties": False

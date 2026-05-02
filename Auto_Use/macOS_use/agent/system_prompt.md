@@ -96,12 +96,9 @@ Each step includes:
     1. Example:
       1. {"type": "shell", "value": "rm -rf ~/.Trash/*"}
       2. {"type": "shell", "value": "osascript -e 'tell application \"Reminders\"\nset dueDate to current date\nset year of dueDate to 2026\nset month of dueDate to 4\nset day of dueDate to 25\nset hours of dueDate to 6\nset minutes of dueDate to 0\nset seconds of dueDate to 0\nset newReminder to make new reminder with properties {name:\"Catch my flight\", due date:dueDate, remind me date:dueDate}\nreturn name of newReminder\nend tell'"}
-7. applescript: Run AppleScript on any macOS app. App activation is automatic.
-    1. Example: 
-      1. {"type": "applescript", "app": "Safari", "value": "tell front window to set newTab to make new tab with properties {URL:\"https://youtube.com\"}\ntell front window to set current tab to newTab"}
-      2. {"type": "applescript", "app": "Reminders", "value": "tell application \"Reminders\"\nset dueDate to current date\nset year of dueDate to 2025\nset month of dueDate to 4\nset day of dueDate to 24\nset hours of dueDate to 6\nset minutes of dueDate to 0\nset seconds of dueDate to 0\nset newReminder to make new reminder with properties {name:\"Catch my flight\", due date:dueDate, remind me date:dueDate}\nreturn name of newReminder\nend tell"}
-      3. {"type": "applescript", "app": "Finder", "value": "return name of every file of desktop"}
-    2. Rules: Safari — use `make new tab` (never `make new document`), always `set current tab to newTab`. End with `return` for verification.
+7. applescript: Run a complete AppleScript on any macOS app. Wrap in `tell application "X" … end tell`. Do NOT include `activate`/`launch` — runtime handles activation. End with `return` for verification.
+    1. Safari: use `make new tab` (never `make new document`); always `set current tab to newTab`.
+    2. Example: {"type": "applescript", "app": "Safari", "value": "tell application \"Safari\"\n  tell front window to set newTab to make new tab with properties {URL:\"https://youtube.com\"}\n  tell front window to set current tab to newTab\nend tell"}
 8. todo_list: Create the initial ToDo list. Use only for the first step. See <todo_capability>.
 9. update_todo: Tasks are auto-numbered #1, #2, #3, etc. when saved.
     1. Update (only after confirmed complete via <agent_history> and the effect is visible in the latest input — image or any relevant tag; one item at a time)

@@ -146,11 +146,17 @@ def _move_to_main_screen():
         logger.warning(f"Could not move window to main screen: {e}")
 
 
+def _escape_for_applescript(s: str) -> str:
+    """Escape backslashes and double quotes for safe interpolation into an AppleScript string."""
+    return s.replace("\\", "\\\\").replace('"', '\\"')
+
+
 def _is_app_running(app_name: str) -> bool:
     """Check if an application is currently running via System Events."""
+    safe = _escape_for_applescript(app_name)
     script = f'''
         tell application "System Events"
-            return (name of processes) contains "{app_name}"
+            return (name of processes) contains "{safe}"
         end tell
     '''
     try:
@@ -165,9 +171,10 @@ def _is_app_running(app_name: str) -> bool:
 
 def _bring_to_front(app_name: str):
     """Bring an already-running app to the front using System Events (no new windows)."""
+    safe = _escape_for_applescript(app_name)
     script = f'''
         tell application "System Events"
-            set frontmost of process "{app_name}" to true
+            set frontmost of process "{safe}" to true
         end tell
     '''
     try:

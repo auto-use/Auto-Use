@@ -28,17 +28,16 @@ else:
     raise RuntimeError(f"Unsupported OS: {platform.system()}")
 
 # Configuration
-PROVIDER = "perplexity"
-MODEL = "gemini-3-flash" #refer to the model name correctly from model_list.txt.
+PROVIDER = "openrouter"
+MODEL = "gemini-3.1-pro" #refer to the model name correctly from model_list.txt.
 # Your task here
 task = """
 
-write hello in milestone
-
+pure apple script . open the apple map and search for the destination feltham to currentl location only applscript allowed
 """
 
 # Control conversation saving
-conversation = False  # Set to False to disable conversation.txt
+conversation = True  # Set to False to disable conversation.txt
 # Control thinking/reasoning
 thinking = True  # Set to True to enable reasoning for supported models
 
