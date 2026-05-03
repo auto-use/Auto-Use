@@ -69,9 +69,37 @@ CLI_AGENT_SCHEMA = {
                             "type": "object",
                             "properties": {
                                 "type": {"type": "string", "const": "view"},
-                                "path": {"type": "string"}
+                                "path": {"type": "string"},
+                                "start": {"type": "integer"},
+                                "end": {"type": "integer"}
                             },
-                            "required": ["type", "path"],
+                            "required": ["type", "path", "start", "end"],
+                            "additionalProperties": False
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "type": {"type": "string", "const": "grep"},
+                                "pattern": {"type": "string"},
+                                "path": {"type": "string"},
+                                "glob": {"type": "string"},
+                                "output_mode": {"type": "string", "enum": ["content", "files_with_matches", "count"]},
+                                "case_insensitive": {"type": "boolean"},
+                                "head_limit": {"type": "integer"},
+                                "context": {"type": "integer"}
+                            },
+                            "required": ["type", "pattern", "path", "glob", "output_mode", "case_insensitive", "head_limit", "context"],
+                            "additionalProperties": False
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "type": {"type": "string", "const": "glob"},
+                                "pattern": {"type": "string"},
+                                "path": {"type": "string"},
+                                "head_limit": {"type": "integer"}
+                            },
+                            "required": ["type", "pattern", "path", "head_limit"],
                             "additionalProperties": False
                         },
                         {

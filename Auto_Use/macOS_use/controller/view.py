@@ -712,8 +712,11 @@ class ControllerView:
                 
                 elif action_type == "view":
                     if self.cli_service:
-                        path = action_item.get("path", "")
-                        result = self.cli_service.view(path)
+                        result = self.cli_service.view(
+                            path=action_item.get("path", ""),
+                            start=action_item.get("start", 0),
+                            end=action_item.get("end", 0),
+                        )
                         results.append(result)
                     else:
                         return {
@@ -721,7 +724,41 @@ class ControllerView:
                             "action": "view",
                             "message": "CLI service not initialized (cli_mode=False)"
                         }
-                
+
+                elif action_type == "grep":
+                    if self.cli_service:
+                        result = self.cli_service.grep(
+                            pattern=action_item.get("pattern", ""),
+                            path=action_item.get("path", ""),
+                            glob_filter=action_item.get("glob", ""),
+                            output_mode=action_item.get("output_mode", "content"),
+                            case_insensitive=action_item.get("case_insensitive", False),
+                            head_limit=action_item.get("head_limit", 50),
+                            context=action_item.get("context", 0),
+                        )
+                        results.append(result)
+                    else:
+                        return {
+                            "status": "error",
+                            "action": "grep",
+                            "message": "CLI service not initialized (cli_mode=False)"
+                        }
+
+                elif action_type == "glob":
+                    if self.cli_service:
+                        result = self.cli_service.glob(
+                            pattern=action_item.get("pattern", ""),
+                            path=action_item.get("path", ""),
+                            head_limit=action_item.get("head_limit", 100),
+                        )
+                        results.append(result)
+                    else:
+                        return {
+                            "status": "error",
+                            "action": "glob",
+                            "message": "CLI service not initialized (cli_mode=False)"
+                        }
+
                 elif action_type == "write":
                     if self.cli_service:
                         path = action_item.get("path", "")
@@ -837,15 +874,56 @@ class ControllerView:
             
             elif action_key == "view":
                 if self.cli_service:
-                    path = action_value.get("path", "") if isinstance(action_value, dict) else action_value
-                    return self.cli_service.view(path)
+                    if isinstance(action_value, dict):
+                        return self.cli_service.view(
+                            path=action_value.get("path", ""),
+                            start=action_value.get("start", 0),
+                            end=action_value.get("end", 0),
+                        )
+                    return self.cli_service.view(action_value)
                 else:
                     return {
                         "status": "error",
                         "action": "view",
                         "message": "CLI service not initialized (cli_mode=False)"
                     }
-            
+
+            elif action_key == "grep":
+                if self.cli_service:
+                    if isinstance(action_value, dict):
+                        return self.cli_service.grep(
+                            pattern=action_value.get("pattern", ""),
+                            path=action_value.get("path", ""),
+                            glob_filter=action_value.get("glob", ""),
+                            output_mode=action_value.get("output_mode", "content"),
+                            case_insensitive=action_value.get("case_insensitive", False),
+                            head_limit=action_value.get("head_limit", 50),
+                            context=action_value.get("context", 0),
+                        )
+                    return self.cli_service.grep(pattern=str(action_value))
+                else:
+                    return {
+                        "status": "error",
+                        "action": "grep",
+                        "message": "CLI service not initialized (cli_mode=False)"
+                    }
+
+            elif action_key == "glob":
+                if self.cli_service:
+                    if isinstance(action_value, dict):
+                        return self.cli_service.glob(
+                            pattern=action_value.get("pattern", ""),
+                            path=action_value.get("path", ""),
+                            head_limit=action_value.get("head_limit", 100),
+                        )
+                    return self.cli_service.glob(pattern=str(action_value))
+                else:
+                    return {
+                        "status": "error",
+                        "action": "glob",
+                        "message": "CLI service not initialized (cli_mode=False)"
+                    }
+
             elif action_key == "write":
                 if self.cli_service:
                     path = action_value.get("path", "")

@@ -455,7 +455,27 @@ output:
 {action_result.get("output", "")}
 </view>
 </Tool_response>"""
-                
+
+                elif action_result.get("action") == "grep":
+                    last_response = f"""<Tool_response>
+<grep>
+command: {action_result.get("command", "")}
+status: {action_result.get("status", "")}
+output:
+{action_result.get("output", "")}
+</grep>
+</Tool_response>"""
+
+                elif action_result.get("action") == "glob":
+                    last_response = f"""<Tool_response>
+<glob>
+command: {action_result.get("command", "")}
+status: {action_result.get("status", "")}
+output:
+{action_result.get("output", "")}
+</glob>
+</Tool_response>"""
+
                 elif action_result.get("action") == "replace":
                     last_response = f"""<Tool_response>
 <replace>
@@ -490,6 +510,20 @@ status: {result.get("status", "")}
 output:
 {result.get("output", "")}
 </view>""")
+                        elif result.get("action") == "grep":
+                            formatted_results.append(f"""<grep>
+command: {result.get("command", "")}
+status: {result.get("status", "")}
+output:
+{result.get("output", "")}
+</grep>""")
+                        elif result.get("action") == "glob":
+                            formatted_results.append(f"""<glob>
+command: {result.get("command", "")}
+status: {result.get("status", "")}
+output:
+{result.get("output", "")}
+</glob>""")
                         elif result.get("action") == "write":
                             formatted_results.append(f"""<write>
 command: {result.get("command", "")}
