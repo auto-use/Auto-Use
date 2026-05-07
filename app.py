@@ -71,6 +71,31 @@ else:
 IS_COMPILED = getattr(sys, 'frozen', False) or '__compiled__' in dir()
 IS_CLI_SUBPROCESS = "--cli-mode" in sys.argv
 
+
+def app_data_dir() -> Path:
+    """Root folder for cli_agent_result/ and cli_minion_result/ in the binary build.
+
+    Compiled binary: ~/Library/Application Support/AutoUse on macOS,
+    %LOCALAPPDATA%/AutoUse on Windows. Keeps user data out of /Applications/
+    (or wherever the binary's CWD ends up at launch).
+
+    Dev mode: project root (where app.py lives), so `python app.py` keeps
+    writing these folders into the repo as before.
+    """
+    if IS_COMPILED:
+        if sys.platform == "darwin":
+            base = Path.home() / "Library" / "Application Support" / "AutoUse"
+        elif sys.platform.startswith("win"):
+            local = os.environ.get("LOCALAPPDATA")
+            base = Path(local) / "AutoUse" if local else Path.home() / "AppData" / "Local" / "AutoUse"
+        else:
+            base = Path.home() / ".local" / "share" / "AutoUse"
+    else:
+        base = Path(__file__).resolve().parent
+    base.mkdir(parents=True, exist_ok=True)
+    return base
+
+
 def get_log_path():
     """Get path for debug log file (only used in compiled mode)"""
     return os.path.join(os.path.dirname(sys.executable), "autouse_debug.log")

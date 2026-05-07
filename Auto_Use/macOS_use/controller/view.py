@@ -37,11 +37,13 @@ from .tool.web.service import WebService
 from .tool.screenshot import ScreenshotService
 from .cli.service import CLIService
 try:
-    from app import debug_log, IS_COMPILED
+    from app import debug_log, IS_COMPILED, app_data_dir
 except ImportError:
     IS_COMPILED = False
     def debug_log(message, level="INFO"):
         pass
+    def app_data_dir():
+        return Path(".")
 
 # Configure logger
 logger = logging.getLogger(__name__)
@@ -603,7 +605,7 @@ class ControllerView:
                     task_description = action_item.get("value", "")
                     logger.info(f"Starting CLI Agent for task: {task_description}")
                     
-                    result_file = Path("cli_agent_result") / f"result_{int(time.time() * 1000)}.json"
+                    result_file = app_data_dir() / "cli_agent_result" / f"result_{int(time.time() * 1000)}.json"
                     result_file.parent.mkdir(parents=True, exist_ok=True)
                     
                     # Build CLI command based on compiled vs dev mode
@@ -728,7 +730,7 @@ class ControllerView:
                     minion_query = action_item.get("value", "")
                     logger.info(f"Starting Minion for query: {minion_query}")
 
-                    result_file = Path("cli_minion_result") / f"result_{int(time.time() * 1000)}_{uuid.uuid4().hex[:6]}.json"
+                    result_file = app_data_dir() / "cli_minion_result" / f"result_{int(time.time() * 1000)}_{uuid.uuid4().hex[:6]}.json"
                     result_file.parent.mkdir(parents=True, exist_ok=True)
                     minion_session_id = uuid.uuid4().hex[:8]
 
