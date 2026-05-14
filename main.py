@@ -28,12 +28,12 @@ else:
     raise RuntimeError(f"Unsupported OS: {platform.system()}")
 
 # Configuration
-PROVIDER = "openrouter"
-MODEL = "gemini-3.1-pro" #refer to the model name correctly from model_list.txt.
+PROVIDER = "local"
+MODEL = "gemma4:e4b" #refer to the model name correctly from model_list.txt.
 # Your task here
 task = """
 
-study the the grep glob approach of macos then syndicate to windowsus use the  directory is desktop/github/Auto use. 
+open safari
 
 """
 

@@ -373,10 +373,26 @@
                         <span class="settings-title">Remote Connection</span>
                     </div>
 
-                    <!-- Not connected state -->
+                    <!-- Not connected state: service selection -->
                     <div class="remote-setup" id="remoteSetup">
-                        <div class="remote-qr-container" id="remoteQrContainer"></div>
-                        <div class="remote-instruction">Scan with your phone to pair via Telegram</div>
+                        <!-- Telegram service button -->
+                        <button class="remote-service-btn" id="remoteTelegramBtn" type="button">
+                            <span class="remote-service-icon">
+                                <!-- Telegram paper-plane glyph -->
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 4.5L2.5 12l5.5 2 2 6 3-3.5 5.5 4 3-16zM10 14l8.5-7L11 14.5l-1 4.5L10 14z"/></svg>
+                            </span>
+                            <span class="remote-service-label">Telegram</span>
+                            <span class="remote-service-chevron">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                            </span>
+                        </button>
+
+                        <!-- Guided pairing — revealed when Telegram button is clicked -->
+                        <div class="remote-phone-form" id="remoteTelegramForm" style="display:none;">
+                            <div class="remote-instruction">Click below to begin pairing. A helper banner will guide you through opening Telegram and logging in.</div>
+                            <button class="remote-connect-btn" id="remoteConnectBtn" type="button">Connect</button>
+                            <div class="remote-instruction" id="remoteInstructions" style="display:none;">Please follow the on-screen instructions in the helper banner (top-right of your screen).</div>
+                        </div>
                     </div>
 
                     <!-- Connected state -->
@@ -388,6 +404,20 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- AutoUse helper info popup (shown when Telegram Connect is clicked) -->
+    <div class="telegram-prompt-overlay" id="telegramPromptOverlay">
+        <div class="telegram-prompt-popup">
+            <div class="liquidGlass-effect-btn"></div>
+            <div class="liquidGlass-tint-btn"></div>
+            <div class="liquidGlass-shine-btn"></div>
+            <div class="telegram-prompt-content">
+                <div class="telegram-prompt-title">AutoUse helper</div>
+                <div class="telegram-prompt-message">The helper will walk you through Telegram setup. Please click <strong>Next</strong> on the banner in the <strong>top-right</strong> corner of your screen to continue.</div>
+                <button class="telegram-prompt-ok" id="telegramPromptOk" type="button">Got it</button>
             </div>
         </div>
     </div>

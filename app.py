@@ -561,6 +561,22 @@ def delete_api_key():
         debug_exception("delete_api_key")
         return jsonify({'error': 'Failed to delete'}), 500
 
+@app.route('/api/telegram/connect', methods=['POST'])
+def telegram_connect():
+    """Kick off the guided Telegram pairing flow.
+
+    Returns immediately; the real work (banner + Safari navigation + manual
+    login) runs in a background thread because it blocks on user clicks for
+    minutes. The banner is the source of truth for live status.
+    """
+    try:
+        from Auto_Use.macOS_use.remote_connection.telegram.setup import run as run_telegram_setup
+        threading.Thread(target=run_telegram_setup, daemon=True).start()
+        return jsonify({'status': 'started'})
+    except Exception as e:
+        debug_exception('telegram_connect')
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 @app.route('/api/vertex/status', methods=['GET'])
 def get_vertex_status():
     """Return current Vertex AI config (project_id and location)"""
