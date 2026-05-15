@@ -605,37 +605,79 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
         });
 
-        // Remote Connection — QR + status logic
+        // Remote Connection — guided Telegram pairing
         const remoteSetup = document.getElementById('remoteSetup');
         const remoteConnected = document.getElementById('remoteConnected');
-        const remoteQrContainer = document.getElementById('remoteQrContainer');
         const remoteBotName = document.getElementById('remoteBotName');
         const remoteDisconnectBtn = document.getElementById('remoteDisconnectBtn');
+        const remoteTelegramBtn = document.getElementById('remoteTelegramBtn');
+        const remoteTelegramForm = document.getElementById('remoteTelegramForm');
+        const remoteConnectBtn = document.getElementById('remoteConnectBtn');
+        const remoteInstructions = document.getElementById('remoteInstructions');
+        const telegramPromptOverlay = document.getElementById('telegramPromptOverlay');
+        const telegramPromptOk = document.getElementById('telegramPromptOk');
 
         function loadRemoteStatus() {
             fetch('/api/telegram/status')
                 .then(res => res.json())
                 .then(data => {
-                    if (data.connected && data.bot_username) {
-                        remoteSetup.style.display = 'none';
-                        remoteConnected.style.display = 'flex';
-                        remoteBotName.textContent = '@' + data.bot_username;
+                    // Always keep the Telegram service button visible and
+                    // expandable. When already paired, just grey out the
+                    // Connect button inside the form rather than swapping
+                    // to a different panel.
+                    remoteSetup.style.display = 'flex';
+                    if (remoteConnected) remoteConnected.style.display = 'none';
+
+                    if (data.connected) {
+                        if (remoteConnectBtn) {
+                            remoteConnectBtn.disabled = true;
+                            remoteConnectBtn.textContent = data.bot_username
+                                ? '✓ Already paired (@' + data.bot_username + ')'
+                                : '✓ Already paired';
+                        }
+                        if (remoteInstructions) remoteInstructions.style.display = 'none';
                     } else {
-                        remoteSetup.style.display = 'flex';
-                        remoteConnected.style.display = 'none';
-                        const pairUrl = 'http://' + data.local_ip + ':5000/pair';
-                        remoteQrContainer.innerHTML = '';
-                        new QRCode(remoteQrContainer, {
-                            text: pairUrl,
-                            width: 160,
-                            height: 160,
-                            colorDark: '#ffffff',
-                            colorLight: 'transparent',
-                            correctLevel: QRCode.CorrectLevel.M
-                        });
+                        if (remoteConnectBtn) {
+                            remoteConnectBtn.disabled = false;
+                            remoteConnectBtn.textContent = 'Connect';
+                        }
+                        if (remoteTelegramForm) remoteTelegramForm.style.display = 'none';
+                        if (remoteInstructions) remoteInstructions.style.display = 'none';
                     }
                 })
                 .catch(() => {});
+        }
+
+        if (remoteTelegramBtn) {
+            remoteTelegramBtn.addEventListener('click', () => {
+                if (!remoteTelegramForm) return;
+                const isHidden = remoteTelegramForm.style.display === 'none' || !remoteTelegramForm.style.display;
+                remoteTelegramForm.style.display = isHidden ? 'flex' : 'none';
+            });
+        }
+
+        if (remoteConnectBtn) {
+            remoteConnectBtn.addEventListener('click', () => {
+                remoteConnectBtn.disabled = true;
+                if (telegramPromptOverlay) telegramPromptOverlay.classList.add('active');
+                fetch('/api/telegram/connect', { method: 'POST' })
+                    .catch(() => {})
+                    .finally(() => {
+                        remoteConnectBtn.disabled = false;
+                        if (remoteInstructions) remoteInstructions.style.display = 'block';
+                    });
+            });
+        }
+
+        if (telegramPromptOk && telegramPromptOverlay) {
+            telegramPromptOk.addEventListener('click', () => {
+                telegramPromptOverlay.classList.remove('active');
+            });
+            telegramPromptOverlay.addEventListener('click', (e) => {
+                if (e.target === telegramPromptOverlay) {
+                    telegramPromptOverlay.classList.remove('active');
+                }
+            });
         }
 
         if (remoteDisconnectBtn) {
