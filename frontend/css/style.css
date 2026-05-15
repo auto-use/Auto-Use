@@ -896,27 +896,124 @@ body {
     padding: clamp(20px, 3vw, 32px) 0;
 }
 
-.remote-qr-container {
-    width: 160px;
-    height: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.08);
-    padding: 12px;
-}
-
-.remote-qr-container img,
-.remote-qr-container canvas {
-    border-radius: 6px;
-}
-
 .remote-instruction {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: clamp(12px, 1.2vw, 14px);
     color: rgba(255, 255, 255, 0.45);
     text-align: center;
+}
+
+.remote-service-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.92);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: clamp(13px, 1.3vw, 15px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.remote-service-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.remote-service-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(80, 165, 230, 0.95);
+}
+
+.remote-service-label {
+    flex: 1;
+    text-align: left;
+}
+
+.remote-service-chevron {
+    color: rgba(255, 255, 255, 0.45);
+    display: flex;
+    align-items: center;
+}
+
+.remote-phone-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.remote-phone-row {
+    display: flex;
+    gap: 8px;
+}
+
+.remote-country-select,
+.remote-phone-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.95);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: clamp(12px, 1.2vw, 14px);
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.remote-country-select {
+    flex: 0 0 42%;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+}
+
+.remote-country-select option {
+    background: #1a1a1a;
+    color: #fff;
+}
+
+.remote-phone-input {
+    flex: 1;
+}
+
+.remote-country-select:focus,
+.remote-phone-input:focus {
+    border-color: rgba(80, 165, 230, 0.55);
+    background: rgba(255, 255, 255, 0.09);
+}
+
+.remote-connect-btn {
+    padding: 10px 16px;
+    background: rgba(80, 165, 230, 0.85);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: clamp(12px, 1.2vw, 14px);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.remote-connect-btn:hover:not(:disabled) {
+    background: rgba(80, 165, 230, 1);
+}
+
+.remote-connect-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 .remote-connected {
@@ -2334,3 +2431,94 @@ body.cli-mode .settings-btn {
    loop of funny scraping/searching phrases (handled in script.js).
    No CSS overlay — globe icon + streamed phrases are the cue.
    ============================================================ */
+
+/* ============================================================
+   AutoUse helper info popup
+   Shown once when the user clicks Connect under Remote Connection →
+   Telegram. Tells them to look at the top-right banner.
+   ============================================================ */
+.telegram-prompt-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 110;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.telegram-prompt-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.telegram-prompt-popup {
+    position: relative;
+    width: clamp(320px, 90vw, 420px);
+    padding: clamp(24px, 3vw, 32px);
+    border-radius: clamp(16px, 2vw, 24px);
+
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    box-shadow: 0 clamp(8px, 2vw, 16px) clamp(32px, 6vw, 64px) rgba(0, 0, 0, 0.2);
+}
+
+.telegram-prompt-overlay.active .telegram-prompt-popup {
+    transform: scale(1) translateY(0);
+}
+
+.telegram-prompt-content {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(14px, 1.8vw, 18px);
+    text-align: center;
+}
+
+.telegram-prompt-title {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: clamp(18px, 2vw, 22px);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.telegram-prompt-message {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: clamp(13px, 1.3vw, 14px);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.5;
+}
+
+.telegram-prompt-message strong {
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+}
+
+.telegram-prompt-ok {
+    margin-top: 4px;
+    padding: 10px 28px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(80, 165, 230, 0.85);
+    color: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: clamp(12px, 1.2vw, 14px);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.telegram-prompt-ok:hover {
+    background: rgba(80, 165, 230, 1);
+}
