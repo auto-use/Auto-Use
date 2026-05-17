@@ -58,6 +58,7 @@ from Cocoa import (
 from ApplicationServices import (
     AXUIElementCreateSystemWide, AXUIElementCreateApplication,
     AXUIElementCopyAttributeValue, AXUIElementSetAttributeValue,
+    AXUIElementGetPid,
     AXIsProcessTrusted, kAXErrorSuccess,
 )
 
@@ -530,21 +531,47 @@ def _point_in_rect(px, py, rect):
             and rect["y"] <= py <= rect["y"] + rect["height"])
 
 
-def _ancestor_clipped_visibility(frame, ancestors, screen, window_clip=None):
+def _ancestor_clipped_visibility(frame, ancestors, screen, window_clip=None,
+                                 scroll_clip=None):
     """Bottom-up visibility check — mirrors Windows _get_clipping_ancestors.
-    Returns (visibility_str, visible_rect_dict_or_None)."""
+    Returns (visibility_str, visible_rect_dict_or_None).
+
+    `ancestors` may be a list of frame dicts (legacy callers) or
+    `(frame, role)` tuples; tuple form lets us recognise scroll containers
+    and skip the fixed/sticky safety-net for them.
+
+    `scroll_clip`, when provided, is the innermost scrollable container's
+    viewport rect. Elements outside it are scroll-clipped — strictly hidden,
+    no safety-net.
+    """
     visible = dict(frame)
+
+    if scroll_clip is not None:
+        inter = _rect_intersect(visible, scroll_clip)
+        if inter is None:
+            return "hidden", None
+        visible = inter
 
     for anc in ancestors:
         if anc is None:
             continue
-        if anc["width"] < 50 or anc["height"] < 50:
+        if isinstance(anc, tuple):
+            anc_frame, anc_role = anc
+            if anc_frame is None:
+                continue
+        else:
+            anc_frame, anc_role = anc, None
+        if anc_frame["width"] < 50 or anc_frame["height"] < 50:
             continue
 
-        inter = _rect_intersect(visible, anc)
+        inter = _rect_intersect(visible, anc_frame)
         if inter is None:
-            anc_on_screen = _rect_intersect(anc, screen) is not None
-            anc_large = anc["width"] >= 100 and anc["height"] >= 100
+            # Scroll containers are authoritative — if the element's frame is
+            # outside the viewport, it really is scrolled out. Don't bypass.
+            if anc_role in CLIP_ROLES:
+                return "hidden", None
+            anc_on_screen = _rect_intersect(anc_frame, screen) is not None
+            anc_large = anc_frame["width"] >= 100 and anc_frame["height"] >= 100
             if anc_on_screen and anc_large:
                 # Safety net for CSS position:fixed / sticky elements —
                 # their AX parent frames may not encompass them even though
@@ -614,9 +641,17 @@ def walk(element, results, depth, screen, clip=None, parent_frame=None,
             if frame and frame["width"] > 0 and frame["height"] > 0:
                 label = build_label(element, cfg)
                 if label:
-                    vis_str, vis_rect = _ancestor_clipped_visibility(frame, ancestors, screen, window_clip)
+                    vis_str, vis_rect = _ancestor_clipped_visibility(
+                        frame, ancestors, screen, window_clip,
+                        scroll_clip=clip)
 
                     if vis_str != "hidden":
+                        try:
+                            err, elem_pid = AXUIElementGetPid(element, None)
+                            if err != kAXErrorSuccess:
+                                elem_pid = 0
+                        except Exception:
+                            elem_pid = 0
                         results.append({
                             "type": role_str,
                             "label": label,
@@ -628,9 +663,12 @@ def walk(element, results, depth, screen, clip=None, parent_frame=None,
                             "visibility": vis_str,
                             "visible_rect_raw": vis_rect,
                             "ax_element": element,
+                            "_window_frame": window_clip,
+                            "_pid": elem_pid,
                         })
 
-    child_ancestors = ancestors + [my_frame] if my_frame else ancestors
+    my_entry = (my_frame, role_str) if my_frame else None
+    child_ancestors = ancestors + [my_entry] if my_entry else ancestors
     children = ax_attr(element, "AXChildren")
     if children:
         try:
@@ -698,17 +736,145 @@ def _find_topmost_app_on_screen(screen):
     return topmost, window_stack
 
 
-def _is_occluded(element, allowed_pids, window_stack):
-    """Check if element is behind another app's window."""
-    cx = element["x"] + element["width"] / 2
-    cy = element["y"] + element["height"] / 2
-    for win in window_stack:
-        if _point_in_rect(cx, cy, win["frame"]):
-            if win["pid"] in allowed_pids:
-                return False
-            else:
-                return True
-    return False
+def _build_full_occluder_stack(screen):
+    """Front-to-back list of every on-screen window (all layers).
+
+    Each entry: {pid, name, frame, window_id, layer}. Skips Window Server
+    and Dock; skips off-screen and tiny windows."""
+    flags = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements
+    wins = CGWindowListCopyWindowInfo(flags, kCGNullWindowID)
+    skip_owners = {"Window Server", "Dock"}
+    stack = []
+    if not wins:
+        return stack
+    for w in wins:
+        owner = w.get("kCGWindowOwnerName", "")
+        if owner in skip_owners:
+            continue
+        bounds = w.get("kCGWindowBounds")
+        if not bounds:
+            continue
+        ww = bounds.get("Width", 0)
+        wh = bounds.get("Height", 0)
+        if ww < 50 or wh < 50:
+            continue
+        wx = bounds.get("X", 0)
+        wy = bounds.get("Y", 0)
+        if not _rect_overlaps(wx, wy, ww, wh, screen):
+            continue
+        stack.append({
+            "pid": w.get("kCGWindowOwnerPID", 0),
+            "name": owner,
+            "frame": {"x": wx, "y": wy, "width": ww, "height": wh},
+            "window_id": w.get("kCGWindowNumber", 0),
+            "layer": w.get("kCGWindowLayer", 0),
+        })
+    return stack
+
+
+def _apply_window_occlusion(results, screen):
+    """Recompute per-element visibility against the real on-screen window
+    z-order. Drops elements whose visible area is effectively zero.
+
+    Elements without a known owning window (e.g. menu-bar walk results that
+    lack `_window_frame`) are left untouched."""
+    full_stack = _build_full_occluder_stack(screen)
+    if not full_stack:
+        return results
+
+    # Cache: (pid, (x, y, w, h)) -> owning index in full_stack
+    owning_cache = {}
+
+    def _owning_index(pid, win_frame):
+        if win_frame is None or not pid:
+            return -1
+        key = (pid, win_frame["x"], win_frame["y"],
+               win_frame["width"], win_frame["height"])
+        if key in owning_cache:
+            return owning_cache[key]
+        best = -1
+        for i, w in enumerate(full_stack):
+            if w["pid"] != pid:
+                continue
+            wf = w["frame"]
+            if (abs(wf["x"] - win_frame["x"]) < 20
+                    and abs(wf["y"] - win_frame["y"]) < 20
+                    and abs(wf["width"] - win_frame["width"]) < 20
+                    and abs(wf["height"] - win_frame["height"]) < 20):
+                best = i
+                break
+        owning_cache[key] = best
+        return best
+
+    out = []
+    for e in results:
+        win_frame = e.get("_window_frame")
+        pid = e.get("_pid")
+        idx = _owning_index(pid, win_frame)
+        if idx < 0:
+            # Unknown owning window (menu-bar walk, dock) — leave as-is.
+            out.append(e)
+            continue
+
+        elem_rect = {"x": e["x"], "y": e["y"],
+                     "width": e["width"], "height": e["height"]}
+        occluders = []
+        for w in full_stack[:idx]:
+            if w["window_id"] and w["window_id"] == full_stack[idx].get("window_id"):
+                continue
+            inter = _rect_intersect(elem_rect, w["frame"])
+            if inter is not None:
+                occluders.append(w["frame"])
+
+        if not occluders:
+            out.append(e)
+            continue
+
+        frac = _visible_fraction_after_occluders(elem_rect, occluders)
+        # Combine with walk-time clipping fraction.
+        vr = e.get("visible_rect_raw")
+        if vr:
+            walk_frac = (vr["width"] * vr["height"]) / max(
+                1, elem_rect["width"] * elem_rect["height"])
+        else:
+            walk_frac = 1.0
+        final = walk_frac * frac
+
+        if final < 0.01:
+            continue  # drop fully-occluded
+        if final >= 0.99:
+            e["visibility"] = "full"
+        else:
+            e["visibility"] = f"partial {int(final * 100)}%"
+        out.append(e)
+
+    return out
+
+
+def _visible_fraction_after_occluders(rect, occluder_rects, samples=20):
+    """Return uncovered-area fraction of rect (0.0..1.0) using a grid sample.
+
+    `occluder_rects` is a list of rect dicts that paint on top of `rect`.
+    A grid point is "covered" if it lies inside ANY occluder. Uses
+    samples x samples points (default 400)."""
+    if rect["width"] <= 0 or rect["height"] <= 0:
+        return 0.0
+    if not occluder_rects:
+        return 1.0
+    step_x = rect["width"] / samples
+    step_y = rect["height"] / samples
+    covered = 0
+    total = samples * samples
+    for i in range(samples):
+        px = rect["x"] + (i + 0.5) * step_x
+        for j in range(samples):
+            py = rect["y"] + (j + 0.5) * step_y
+            for occ in occluder_rects:
+                if (occ["x"] <= px <= occ["x"] + occ["width"]
+                        and occ["y"] <= py <= occ["y"] + occ["height"]):
+                    covered += 1
+                    break
+    return (total - covered) / total
 
 
 def _scan_menu_bar(screen, top_pid):
@@ -962,10 +1128,6 @@ def extract_all(screen):
                         if dwf and _on_screen(dwf, screen):
                             walk(dwin, results, 0, screen, clip=dwf, window_clip=dwf)
 
-            allowed_pids = {top["pid"]} | dialog_pids
-            results = [e for e in results
-                       if not _is_occluded(e, allowed_pids, window_stack)]
-
     else:
         finder = find_app("com.apple.finder")
         if finder:
@@ -1060,6 +1222,12 @@ def extract_all(screen):
     if dock:
         walk(AXUIElementCreateApplication(dock.processIdentifier()), results, 0, screen)
 
+    # ----- Real on-screen occlusion pass -----
+    # Recompute each element's visibility against every window that paints
+    # on top of its owning window. Drop fully-covered elements so the agent
+    # never receives a click index for a coordinate it can't actually hit.
+    results = _apply_window_occlusion(results, screen)
+
     # Deduplicate
     seen = set()
     unique = []
@@ -1069,6 +1237,11 @@ def extract_all(screen):
             seen.add(key)
             unique.append(e)
     results = unique
+
+    # Strip internal helper keys before returning so they don't leak.
+    for e in results:
+        e.pop("_window_frame", None)
+        e.pop("_pid", None)
 
     return app_info, menu_items, results
 
