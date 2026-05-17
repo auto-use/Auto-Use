@@ -919,7 +919,11 @@ def extract_all(screen):
                     walk(win, results, 0, screen, clip=screen_clip, is_browser=is_browser, window_clip=screen_clip)
 
         if window_stack:
-            # Find overlay/dialog windows from any process that overlap the topmost app
+            # Find overlay/dialog windows from other processes that actually
+            # float ABOVE the topmost app (Spotlight, system popovers, sheets).
+            # Walk full window list front-to-back; stop when we reach the
+            # frontmost app's first layer-0 window — anything after is behind
+            # it and must be excluded.
             dialog_pids = set()
             skip_dialog_owners = {"Window Server", "Dock"}
             top_frame = top["frame"]
@@ -928,8 +932,11 @@ def extract_all(screen):
             if all_wins:
                 for w in all_wins:
                     wpid = w.get("kCGWindowOwnerPID", 0)
+                    layer = w.get("kCGWindowLayer", -1)
+                    if wpid == top["pid"] and layer == 0:
+                        break  # reached frontmost app's window; stop
                     if wpid == top["pid"]:
-                        continue  # Skip topmost app's own windows
+                        continue  # frontmost app's own higher-layer windows already walked
                     owner = w.get("kCGWindowOwnerName", "")
                     if owner in skip_dialog_owners:
                         continue
